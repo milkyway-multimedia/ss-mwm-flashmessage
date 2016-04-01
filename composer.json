@@ -1,0 +1,27 @@
+{
+    "name"       : "milkyway-multimedia/ss-mwm-flashmessage",
+    "description": "A JS based flash messenger for Silverstripe",
+    "type"       : "silverstripe-module",
+    "keywords"   : [
+        "silverstripe",
+        "flash",
+        "message",
+        "mwm"
+    ],
+    "license"    : "MIT",
+    "authors"    : [
+        {
+            "name" : "Mellisa Hankins",
+            "email": "mellisa.hankins@me.com"
+        }
+    ],
+    "require"    : {
+        "milkyway-multimedia/ss-mwm-env"   : "~0.3"
+    },
+    "extra"      : {
+        "installer-name": "mwm-flashmessage",
+        "branch-alias"  : {
+            "dev-master": "0.3.x-dev"
+        }
+    }
+}

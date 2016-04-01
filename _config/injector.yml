@@ -1,0 +1,6 @@
+---
+Name: mwm-flashmessage--injector
+---
+Injector:
+  message:
+    class: 'Milkyway\SS\FlashMessage\Notifier'

@@ -1,0 +1,8 @@
+---
+Name: mwm-flashmessage--notifier
+---
+messages:
+  mapping:
+    cms: LeftAndMain
+    page: ContentController
+    form: Form

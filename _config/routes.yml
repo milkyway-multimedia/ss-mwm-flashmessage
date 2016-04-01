@@ -1,0 +1,6 @@
+---
+Name: mwm-flashmessage--routes
+---
+Director:
+  rules:
+    'notifications': 'Milkyway\SS\FlashMessage\Controller'
