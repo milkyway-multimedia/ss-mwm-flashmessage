@@ -56,7 +56,7 @@ class Notifier
      * @param string $area
      * @return $this
      */
-    public function add($content, $level = '', $timeout = 0, $priority = 0, $dismissable = false, $area = '')
+    public function add($content, $level = '', $timeout = 0, $priority = 0, $dismissable = true, $area = '')
     {
         $area = $area ?: is_array($content) && isset($content['area']) ? $content['area'] : $this->workingArea ?: $this->defaultArea;
         $level = $level ?: $this->defaultLevel;
