@@ -8,6 +8,7 @@ class Controller extends Original
 {
     private static $allowed_actions = [
         'refresh',
+        'dismiss',
     ];
 
     private static $url_handlers = [
@@ -21,23 +22,24 @@ class Controller extends Original
      * @return array|\SS_HTTPResponse|void
      * @throws \SS_HTTPResponse_Exception
      */
-    public function refresh($request) {
+    public function refresh($request)
+    {
         $area = $request->param('Area');
 
         // Kind of a hack for making sure it goes back to its old ways if an allowed action is set
-        if(in_array(str_replace('-', '_', $area), $this->allowedActions())) {
+        if ($area != __FUNCTION__ && in_array(str_replace('-', '_', $area), $this->allowedActions())) {
             return RequestHandler::handleAction($request, str_replace('-', '_', $area));
         }
 
         // Only available via AJAX
-        if(!$request->isAjax()) {
+        if (!$request->isAjax()) {
             return $this->httpError(404);
         }
 
         Requirements::clear();
 
         // If no area specified, do nothing
-        if(!$area) {
+        if (!$area) {
             return [];
         }
 
@@ -52,12 +54,35 @@ class Controller extends Original
         return $response;
     }
 
+    public function dismiss($request)
+    {
+        // Only available via AJAX
+        if (!$request->isAjax()) {
+            return $this->httpError(404);
+        }
+
+        $area = $request->getVar('area');
+        $this->extend('onDismiss', $area, $request);
+
+        singleton('message')->blocker()->block([
+            'area'    => $area,
+            'content' => $request->getVar('content'),
+            'id'      => $request->getVar('id'),
+        ]);
+
+        $response = $this->getResponse();
+        $response->addHeader('Content-type', 'application/json');
+        $response->setBody('');
+        return $response;
+    }
+
     /**
      * Get link for an area, for templates
      * @param string $area
      * @return String
      */
-    public function Link($area = '') {
+    public function Link($area = '')
+    {
         return $this->join_links('notifications', $area);
     }
 }

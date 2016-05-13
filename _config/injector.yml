@@ -4,3 +4,5 @@ Name: mwm-flashmessage--injector
 Injector:
   message:
     class: 'Milkyway\SS\FlashMessage\Notifier'
+    constructor:
+      BlocksNotifications: '%$Milkyway\SS\FlashMessage\SessionBlocker'

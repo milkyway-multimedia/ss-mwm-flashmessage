@@ -1,5 +1,6 @@
 <?php namespace Milkyway\SS\FlashMessage;
 
+use Milkyway\SS\FlashMessage\Contracts\BlocksNotifications;
 use Session;
 use Controller as Control;
 use Requirements;
@@ -37,8 +38,12 @@ class Notifier
     /* @var string Current area to display message */
     protected $workingArea = '';
 
-    public function __construct()
+    /* @var \Milkyway\SS\FlashMessage\Contracts\BlocksNotifications Takes care of the blocker */
+    protected $blocker;
+
+    public function __construct(BlocksNotifications $blocker)
     {
+        $this->blocker = $blocker;
         $this->defaultArea = singleton('env')->get('messages.default_area', $this->defaultArea);
         $this->defaultLevel = singleton('env')->get('messages.default_level', $this->defaultLevel);
 
@@ -65,17 +70,31 @@ class Notifier
             return $this;
         }
 
-        $this->style($area);
-
-        $messages = (array)Session::get($this->id . '.' . $area);
-
-        array_unshift($messages, is_array($content) ? $content : [
+        $content = is_array($content) ? $content : [
             'content'     => $content,
             'level'       => $level,
             'timeout'     => $timeout,
             'priority'    => $priority,
             'dismissable' => $dismissable,
-        ]);
+        ];
+
+        if($this->blocker()->isBlocked($content)) {
+            return;
+        }
+
+        $this->style($area);
+
+        $messages = (array)Session::get($this->id . '.' . $area);
+
+        if($dismissable && isset($content['dismiss_link'])) {
+            $content['dismiss_link'] = singleton('Milkyway\SS\FlashMessage\Controller')->Link('dismiss' . '?' . http_build_query([
+                    'area' => $area,
+                    'id' => empty($content['id']) ? '' : $content['id'],
+                    'content' => empty($content['content']) ? '' : $content['content'],
+                ]));
+        }
+
+        array_unshift($messages, $content);
 
         Session::set($this->id . '.' . $area, $messages);
 
@@ -183,6 +202,12 @@ class Notifier
             });
         }
 
+        $messages = array_filter($messages, function($message) use($area) {
+            $params = $message;
+            $params['area'] = $area;
+            return !$this->blocker()->isBlocked($params);
+        });
+
         // Sorting is handled in JS
 //        return usort($messages, function($a, $b) {
 //            return $a['priority'] - $b['priority'];
@@ -284,6 +309,24 @@ class Notifier
         if (!singleton('env')->get('messages.exclude_lib_css')) {
             Requirements::css(singleton('env')->get('messages.dir') . '/css/mwm.flash-messages.css');
         }
+    }
+
+    /**
+     * Get the blocker that blocks notifications
+     * @return BlocksNotifications
+     */
+    public function blocker() {
+        return $this->blocker;
+    }
+
+    /**
+     * Set a new blocker on this notifier
+     * @param BlocksNotifications $blocker
+     * @return $this
+     */
+    public function setBlocker(BlocksNotifications $blocker) {
+        $this->blocker = $blocker;
+        return $this;
     }
 
     /**

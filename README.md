@@ -45,7 +45,19 @@ By default the cms area is used. Any other value will add a message to any contr
 - modal: Show a message modal, this will attempt to either use a bootstrap modal, jquery ui modal, vex alert or javascript alert (ordered by priority)
 - note: Show a growl notification, this will attempt to either use a Messenger, vex alert, CMS notification or javascript alert (ordered by priority)
 
-By default the cms area is used. Any other value will add a message to any controller. So you can use ->global() to add a global message.
+#### Blockers
+Once a notification is dismissed, it will not be shown for the current session. To disable this, you must inject the NullBlocker into the Notifier class, as below:
+
+```
+
+    Injector:
+      message:
+        constructor:
+          BlocksNotifications: '%$Milkyway\SS\FlashMessage\NullBlocker'
+
+```
+
+You can create your own implementation, but you must implement the `Milkyway\SS\FlashMessage\Contracts\BlocksNotifications` interface and inject it as above. An example would be a Cookie blocker, or a class that blocks based on area.
 
 #### How it works
 This messaging system is javascript based. It should work on most controllers as long as it accesses Silverstripe requirements.
