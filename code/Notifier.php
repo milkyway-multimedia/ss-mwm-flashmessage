@@ -86,7 +86,7 @@ class Notifier
 
         $messages = (array)Session::get($this->id . '.' . $area);
 
-        if($dismissable && isset($content['dismiss_link'])) {
+        if($dismissable && !isset($content['dismiss_link'])) {
             $content['dismiss_link'] = singleton('Milkyway\SS\FlashMessage\Controller')->Link('dismiss' . '?' . http_build_query([
                     'area' => $area,
                     'id' => empty($content['id']) ? '' : $content['id'],
