@@ -1,0 +1,7 @@
+{
+  "name"        : "mwm.ss.flashmessage",
+  "private"     : true,
+  "dependencies": {
+    "mwm.common": "git@bitbucket.org:milkyway-multimedia/mwm.common.git"
+  }
+}

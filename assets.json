@@ -5,7 +5,7 @@
         },
         {
             "src"  : [
-                "bower_components/assets/less/plugins/flash-messages.less"
+                "node_modules/mwm.common/less/plugins/flash-messages.less"
             ],
             "dest" : "css/mwm.flash-messages.css"
         }
@@ -16,7 +16,7 @@
         },
         {
             "src"  : [
-                "bower_components/assets/javascript/alerts.js",
+                "node_modules/mwm.common/javascript/alerts.js",
                 "_assets/js/_merged/mwm.flash-messages.js"
             ],
             "dest" : "js/mwm.flash-messages.js"
